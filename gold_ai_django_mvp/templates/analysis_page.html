@@ -1,0 +1,96 @@
+<!-- analysis_app/templates/analysis_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gold Market Analysis</title>
+    <!-- Add any additional head elements or stylesheets here -->
+    <!-- Include chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Gold Market Analysis</h1>
+    </header>
+
+    <section id="price-section">
+        <h2>Gold Price</h2>
+        <p>Current Gold Price: ${{ analysis_results.current_gold_price }}</p>
+        <!-- Add more details about the gold price if needed -->
+    </section>
+
+    <!-- Include SMA Chart -->
+    <section id="sma-chart">
+        <h2>Simple Moving Average (SMA)</h2>
+        <canvas id="smaChart" width="400" height="200"></canvas>
+        <script>
+            var smaData = {{ short_term_sma|safe }};
+            var longTermSmaData = {{ long_term_sma|safe }};
+            // Use chart.js to create the SMA chart
+            var ctx = document.getElementById('smaChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: smaData.length }, (_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: 'Short Term SMA',
+                            data: smaData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                        {
+                            label: 'Long Term SMA',
+                            data: longTermSmaData,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                    ],
+                },
+            });
+        </script>
+    </section>
+
+    <!-- Include MACD Chart -->
+    <section id="macd-chart">
+        <h2>Moving Average Convergence Divergence (MACD)</h2>
+        <canvas id="macdChart" width="400" height="200"></canvas>
+        <script>
+            var macdData = {{ macd_data|safe }};
+            // Use chart.js to create the MACD chart
+            var ctxMacd = document.getElementById('macdChart').getContext('2d');
+            var macdChart = new Chart(ctxMacd, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: macdData['MACD'].length }, (_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: 'MACD',
+                            data: macdData['MACD'],
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                        {
+                            label: 'Signal Line',
+                            data: macdData['Signal_Line'],
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                    ],
+                },
+            });
+        </script>
+    </section>
+
+    <!-- Include other sections and charts as needed -->
+
+    <footer>
+        <p>&copy; 2023 Gold Market Analysis</p>
+        <!-- Add any additional footer elements or information here -->
+    </footer>
+</body>
+</html>

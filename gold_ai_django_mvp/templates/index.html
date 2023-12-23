@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gold Market Analysis</title>
+    <!-- Add any additional head elements or stylesheets here -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #ffd700;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            background-color: #ffd700;
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 style="color: #333;">Gold Market Analysis</h1>
+        <nav>
+             <a href="/static" style="color: #333;">Home</a>
+             <a href="/analysis/" style="color: #333;">Analysis</a>
+             <a href="/expert_opinion/" style="color: #333;">Expert Opinion</a>
+             <a href="/analysis_page/" style="color: #333;">Analysis Page</a>
+        </nav>
+    </header>
+
+    <section id="price-section">
+        <h2>Gold Price</h2>
+        <p>Current Gold Price: ${{ current_gold_price }}</p>
+        <!-- Add more details about the gold price if needed -->
+    </section>
+
+    <section id="news-section">
+        <h2>News Analysis</h2>
+        <p>News Sentiment: {{ news_sentiment }}</p>
+        <!-- Add more details about news analysis if needed -->
+    </section>
+
+    <section id="chat-section">
+    <h2>Chat with Our AI</h2>
+    <div id="chat-container">
+        <div id="messages" style="border: 1px solid #ddd; padding: 10px; height: 200px; overflow-y: scroll; margin-bottom: 10px;"></div>
+        <input type="text" id="message-input" placeholder="Type your message" style="width: calc(100% - 110px); padding: 10px;">
+        <button onclick="sendMessage()" style="padding: 10px; width: 100px;">Send</button>
+    </div>
+    </section>
+
+    <section id="expert-opinion-section">
+        <h2>Expert Opinion</h2>
+        <p>Expert Opinion: {{ expert_opinion }}</p>
+        <!-- Add more details about the expert opinion if needed -->
+    </section>
+
+    <section id="prediction-section">
+    <h2>Price Predictions</h2>
+    <p>Prediction: {{ prediction }}</p>
+    <p>Next Day Prediction: {{ next_day_prediction }}</p>
+    <p>Next Week Prediction Trend: {{ next_week_prediction_trend }}</p>
+    <p>
+        Overall Direction:
+        {% if overall_direction == "↑ Upward" %}
+            <span style="color: green;">&#8593; Upward</span>
+        {% elif overall_direction == "↓ Downward" %}
+            <span style="color: red;">&#8595; Downward</span>
+        {% else %}
+            <span>No Change</span>
+        {% endif %}
+    </p>
+    <!-- Add more details about predictions if needed -->
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Gold Market Analysis</p>
+        <!-- Add any additional footer elements or information here -->
+    </footer>
+
+    <script src="{% static 'js/chat.js' %}"></script>
+
+</body>
+</html>
