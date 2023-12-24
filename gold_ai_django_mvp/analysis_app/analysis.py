@@ -1,4 +1,4 @@
-import nltk
+#import nltk
 import openai
 import requests
 import numpy as np
@@ -11,7 +11,7 @@ class GoldMarketAnalyzer:
     def __init__(self):
         self.api_key = '1LIUUC0LBOCFOJ9P'
         self.news_api_key = '74821d4399404e1c98b5daa4d4e8c0b4'
-        self.openai_api_key = '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'
+        self.openai_api_key = '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'
         openai.api_key = self.openai_api_key
 
     def get_gold_price(self):
@@ -84,7 +84,7 @@ class GoldMarketAnalyzer:
             return "Neutral News Sentiment"
 
     # Download the sentiment analysis lexicon
-    nltk.download('vader_lexicon')
+    #nltk.download('vader_lexicon')
 
     def gpt3_assist_analysis(self, news_sentiment, expert_opinion, overall_direction):
         prompt_text = "Based on the received news data, provide me with a forecast..."
