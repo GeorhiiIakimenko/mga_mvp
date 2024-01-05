@@ -11,6 +11,7 @@ from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
 
+# Ваше представление Django (например, analysis_page.html)
 def analysis_page(request):
     analyzer = GoldMarketAnalyzer()
     analysis_results = analyzer.run_analysis()
@@ -18,10 +19,13 @@ def analysis_page(request):
     # Include expert opinion in the context
     context = {
         'analysis_results': analysis_results,
+        'current_gold_price': analysis_results['current_gold_price'],
+        'short_term_sma': analysis_results['short_term_sma'],
+        'long_term_sma': analysis_results['long_term_sma'],
+        # Добавьте другие значения по аналогии
     }
 
-    return render(request, '../templates/index.html', context)
-
+    return render(request, 'analysis_page.html', context)
 
 
 def index(request):
@@ -60,10 +64,14 @@ def index(request):
         'overall_direction': overall_direction,
         'gpt_response': gpt_response,
         'expert_opinion': expert_opinion_text,
+        'short_term_sma': analysis_results['short_term_sma'],
+        'long_term_sma': analysis_results['long_term_sma'],
+        'macd': analysis_results['macd'],
+        'next_week_prediction_price': analysis_results['next_week_prediction_price'],
+        'weighted_conclusion': analysis_results['weighted_conclusion'],
     }
 
-    return render(request, '../templates/index.html', context)
-
+    return render(request, 'index.html', context)
 
 
 def expert_opinion_form(request):
@@ -76,27 +84,6 @@ def expert_opinion_form(request):
         form = ExpertOpinionForm()
 
     return render(request, 'expert_opinion_form.html', {'form': form})
-
-
-def analysis_page(request):
-    analyzer = GoldMarketAnalyzer()
-    analysis_results = analyzer.run_analysis()
-
-    # Additional data for SMA and MACD
-    historical_prices = analyzer.get_historical_prices()
-    short_term_sma, long_term_sma = analyzer.calculate_sma(historical_prices, window=10), analyzer.calculate_sma(historical_prices, window=50)
-    macd_df = analyzer.calculate_macd(historical_prices, short_window=12, long_window=26, signal_window=9)
-
-    # Include additional data in the context
-    context = {
-        'analysis_results': analysis_results,
-        'historical_prices': historical_prices,
-        'short_term_sma': short_term_sma,
-        'long_term_sma': long_term_sma,
-        'macd_data': macd_df.to_dict(orient='list'),  # Convert DataFrame to dictionary for easier use in JavaScript
-    }
-
-    return render(request, 'analysis_page.html', context)
 
 
 @csrf_exempt

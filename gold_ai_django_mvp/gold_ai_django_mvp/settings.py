@@ -120,7 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Default primary key field type
@@ -129,4 +129,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = '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'

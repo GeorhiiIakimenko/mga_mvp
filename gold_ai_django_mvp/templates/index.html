@@ -61,49 +61,53 @@
         </nav>
     </header>
 
-    <section id="price-section">
-        <h2>Gold Price</h2>
-        <p>Current Gold Price: ${{ current_gold_price }}</p>
-        <!-- Add more details about the gold price if needed -->
+    <section>
+        <h2>Gold Price Analysis</h2>
+        <p><span>Current Price:</span> ${{ current_gold_price }}</p>
+        <p><span>Next Day Price Movement Prediction:</span> {{ next_day_prediction }}</p>
+        <p><span>Short-term SMA:</span> ${{ short_term_sma|floatformat:2 }}</p>
+        <p><span>Long-term SMA:</span> ${{ long_term_sma|floatformat:2 }}</p>
     </section>
 
-    <section id="news-section">
-        <h2>News Analysis</h2>
-        <p>News Sentiment: {{ news_sentiment }}</p>
-        <!-- Add more details about news analysis if needed -->
+    <section>
+        <h2>MACD Analysis</h2>
+        <p><span>MACD:</span> ${{ macd|floatformat:2 }}</p>
     </section>
 
-    <section id="chat-section">
-    <h2>Chat with Our AI</h2>
-    <div id="chat-container">
-        <div id="messages" style="border: 1px solid #ddd; padding: 10px; height: 200px; overflow-y: scroll; margin-bottom: 10px;"></div>
-        <input type="text" id="message-input" placeholder="Type your message" style="width: calc(100% - 110px); padding: 10px;">
-        <button onclick="sendMessage()" style="padding: 10px; width: 100px;">Send</button>
-    </div>
+    <section>
+        <h2>Next Week Analysis (Trend-Based)</h2>
+        <p><span>Next Week Predicted Price (Trend):</span> ${{ next_week_prediction_price|floatformat:2 }}</p>
+        <p><span>Next Week Price Movement Prediction (Trend):</span> {{ next_week_prediction_trend }}</p>
     </section>
 
-    <section id="expert-opinion-section">
-        <h2>Expert Opinion</h2>
-        <p>Expert Opinion: {{ expert_opinion }}</p>
-        <!-- Add more details about the expert opinion if needed -->
+    <section>
+        <h2>Sentiment Analysis</h2>
+        <p><span>News Sentiment:</span> {{ news_sentiment }}</p>
     </section>
 
-    <section id="prediction-section">
-    <h2>Price Predictions</h2>
-    <p>Prediction: {{ prediction }}</p>
-    <p>Next Day Prediction: {{ next_day_prediction }}</p>
-    <p>Next Week Prediction Trend: {{ next_week_prediction_trend }}</p>
-    <p>
-        Overall Direction:
-        {% if overall_direction == "↑ Upward" %}
-            <span style="color: green;">&#8593; Upward</span>
-        {% elif overall_direction == "↓ Downward" %}
-            <span style="color: red;">&#8595; Downward</span>
-        {% else %}
-            <span>No Change</span>
-        {% endif %}
-    </p>
-    <!-- Add more details about predictions if needed -->
+    <section>
+        <h2>GPT Analysis</h2>
+        <p>{{ gpt_response }}</p>
+    </section>
+
+    <section>
+        <h2>Price Movement Prediction</h2>
+        <p>{{ prediction }}</p>
+    </section>
+
+    <section>
+        <h2>Expert's Opinion</h2>
+        <p>{{ expert_opinion }}</p>
+    </section>
+
+    <section>
+        <h2>Weighted Conclusion</h2>
+         <p><span>Weighted Conclusion:</span> {{ weighted_conclusion|floatformat:2 }}</p>
+    </section>
+
+    <section>
+        <h2>Overall Direction</h2>
+        <p class="{% if overall_direction == '↑ Upward' %}green{% elif overall_direction == '↓ Downward' %}red{% endif %}">{{ overall_direction }}</p>
     </section>
 
     <footer>
@@ -112,6 +116,5 @@
     </footer>
 
     <script src="{% static 'js/chat.js' %}"></script>
-
 </body>
 </html>

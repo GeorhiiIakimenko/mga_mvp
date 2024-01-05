@@ -1,96 +1,32 @@
-<!-- analysis_app/templates/analysis_page.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Gold Market Analysis</title>
-    <!-- Add any additional head elements or stylesheets here -->
-    <!-- Include chart.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <header>
-        <h1>Gold Market Analysis</h1>
-    </header>
+{% extends 'index.html' %}
 
-    <section id="price-section">
-        <h2>Gold Price</h2>
-        <p>Current Gold Price: ${{ analysis_results.current_gold_price }}</p>
-        <!-- Add more details about the gold price if needed -->
+{% block content %}
+    <section>
+        <h2>Gold Price Analysis</h2>
+        <p><span>Current Price:</span> ${{ current_gold_price }}</p>
+        <p><span>Next Day Price Movement Prediction:</span> {{ next_day_prediction }}</p>
+        <p><span>Short-term SMA:</span> ${{ short_term_sma|floatformat:2 }}</p>
+        <p><span>Long-term SMA:</span> ${{ long_term_sma|floatformat:2 }}</p>
     </section>
 
-    <!-- Include SMA Chart -->
-    <section id="sma-chart">
-        <h2>Simple Moving Average (SMA)</h2>
-        <canvas id="smaChart" width="400" height="200"></canvas>
-        <script>
-            var smaData = {{ short_term_sma|safe }};
-            var longTermSmaData = {{ long_term_sma|safe }};
-            // Use chart.js to create the SMA chart
-            var ctx = document.getElementById('smaChart').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({ length: smaData.length }, (_, i) => i + 1),
-                    datasets: [
-                        {
-                            label: 'Short Term SMA',
-                            data: smaData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                        },
-                        {
-                            label: 'Long Term SMA',
-                            data: longTermSmaData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                        },
-                    ],
-                },
-            });
-        </script>
+    <section>
+        <h2>MACD Analysis</h2>
+        <p><span>MACD:</span> ${{ prices_df.MACD|floatformat:2 }}</p>
+        <p><span>Signal Line:</span> ${{ prices_df.Signal_Line|floatformat:2 }}</p>
     </section>
 
-    <!-- Include MACD Chart -->
-    <section id="macd-chart">
-        <h2>Moving Average Convergence Divergence (MACD)</h2>
-        <canvas id="macdChart" width="400" height="200"></canvas>
-        <script>
-            var macdData = {{ macd_data|safe }};
-            // Use chart.js to create the MACD chart
-            var ctxMacd = document.getElementById('macdChart').getContext('2d');
-            var macdChart = new Chart(ctxMacd, {
-                type: 'line',
-                data: {
-                    labels: Array.from({ length: macdData['MACD'].length }, (_, i) => i + 1),
-                    datasets: [
-                        {
-                            label: 'MACD',
-                            data: macdData['MACD'],
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                        },
-                        {
-                            label: 'Signal Line',
-                            data: macdData['Signal_Line'],
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                        },
-                    ],
-                },
-            });
-        </script>
+    <section>
+        <h2>Weekly Analysis</h2>
+        <p><span>Weekly Short-term SMA:</span> ${{ weekly_short_term_sma|floatformat:2 }}</p>
+        <p><span>Weekly Long-term SMA:</span> ${{ weekly_long_term_sma|floatformat:2 }}</p>
     </section>
 
-    <!-- Include other sections and charts as needed -->
+    <section>
+        <h2>Next Week Analysis (Trend-Based)</h2>
+        <p><span>Next Week Predicted Price (Trend):</span> ${{ next_week_price_trend|floatformat:2 }}</p>
+        <p><span>Next Week Price Movement Prediction (Trend):</span> {{ next_week_prediction_trend }}</p>
+    </section>
 
-    <footer>
-        <p>&copy; 2023 Gold Market Analysis</p>
-        <!-- Add any additional footer elements or information here -->
-    </footer>
-</body>
-</html>
+    <!-- Добавьте другие секции по аналогии для других переменных -->
+
+{% endblock %}

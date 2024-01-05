@@ -11,17 +11,23 @@ class GoldMarketAnalyzer:
     def __init__(self):
         self.api_key = '1LIUUC0LBOCFOJ9P'
         self.news_api_key = '74821d4399404e1c98b5daa4d4e8c0b4'
-        self.openai_api_key = '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'
+        self.openai_api_key = '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'
         openai.api_key = self.openai_api_key
 
     def get_gold_price(self):
         symbol = 'XAUUSD'
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={self.api_key}'
-        response = requests.get(url)
-        data = response.json()
-        latest_date = max(data['Time Series (Daily)'].keys())
-        latest_price = float(data['Time Series (Daily)'][latest_date]['4. close'])
-        return latest_price
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Raises an HTTPError for bad responses (4xx or 5xx)
+            data = response.json()
+            latest_date = max(data['Time Series (Daily)'].keys())
+            latest_price = float(data['Time Series (Daily)'][latest_date]['4. close'])
+            return latest_price
+        except requests.RequestException as e:
+            print(f"Error fetching gold prices: {e}")
+            return None
 
     def analyze_price_movement(self, current_price, short_term_sma, long_term_sma, macd, signal_line):
         if short_term_sma > long_term_sma and macd > signal_line:
@@ -86,16 +92,24 @@ class GoldMarketAnalyzer:
     # Download the sentiment analysis lexicon
     #nltk.download('vader_lexicon')
 
-    def gpt3_assist_analysis(self, news_sentiment, expert_opinion, overall_direction):
-        prompt_text = "Based on the received news data, provide me with a forecast..."
+    def gpt3_assist_analysis(self, news_sentiment, expert_opinion, overall_direction, historical_prices):
+        # Construct the prompt and include historical prices in the conversation
+        prompt_text = "Based on the received news data, provide me with a forecast for the next week price movement of the XAUUSD pair, indicating either 'price growth' or 'price down.' The response to 'price growth' or 'price down' occurs by comparing the current quote with the expected value for tomorrow, with a deviation of $10 USD per 1 troy ounce of XAUUSD. In case of no change or if the mentioned deviation is less than $10 USD per 1 troy ounce of XAUUSD, specify 'Unchanged.'"
+
+        # Include historical prices in the conversation
+        conversation = [
+            {"role": "system", "content": "You are a financial analyst providing insights on gold prices."},
+            {"role": "user", "content": prompt_text},
+            {"role": "user", "content": f"Historical Prices: {', '.join(map(str, historical_prices))}"},
+            {"role": "user", "content": f"News Sentiment: {news_sentiment}"},
+            {"role": "user", "content": f"Expert Opinion: {expert_opinion}"},
+            {"role": "user", "content": f"Overall Direction: {overall_direction}"}
+        ]
 
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a financial analyst providing insights on gold prices."},
-                    {"role": "user", "content": prompt_text}
-                ]
+                model="gpt-4",  # Update to the desired model
+                messages=conversation
             )
             insight = response['choices'][0]['message']['content']
             return insight
@@ -112,6 +126,7 @@ class GoldMarketAnalyzer:
     def run_analysis(self):
         # Retrieve the latest expert opinion
         latest_expert_opinion = ExpertOpinion.objects.last()
+
         expert_opinion_text = latest_expert_opinion.opinion if latest_expert_opinion else "No expert opinion available"
 
         gold_news = self.get_gold_news()
@@ -152,7 +167,8 @@ class GoldMarketAnalyzer:
             weight_sma * (1 if prediction.startswith("↑") else (-1 if prediction.startswith("↓") else 0))
         )
         overall_direction = "↑ Upward" if weighted_conclusion > 0 else "↓ Downward" if weighted_conclusion < 0 else "→ No Change"
-        gpt_response = self.gpt3_assist_analysis(news_sentiment, expert_opinion, overall_direction)
+        historical_prices = self.get_historical_prices()
+        gpt_response = self.gpt3_assist_analysis(news_sentiment, expert_opinion, overall_direction, historical_prices)
 
         # You can return or print the results as needed
         return {
@@ -163,6 +179,14 @@ class GoldMarketAnalyzer:
             'overall_direction': overall_direction,
             'gpt_response': gpt_response,
             'expert_opinion': expert_opinion_text,
+            'short_term_sma': short_term_sma.iloc[-1],
+            'long_term_sma': long_term_sma.iloc[-1],
+            'macd': prices_df['MACD'].iloc[-1],
+            'signal_line': prices_df['Signal_Line'].iloc[-1],
+            'weekly_short_term_sma': weekly_short_term_sma.iloc[-1],
+            'weekly_long_term_sma': weekly_long_term_sma.iloc[-1],
+            'next_week_prediction_price': next_week_price_trend,
+            'weighted_conclusion': weighted_conclusion,
         }
 
 
