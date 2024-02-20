@@ -2,16 +2,17 @@
 import openai
 import requests
 import numpy as np
-import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 from .models import ExpertOpinion
+import pandas as pd
+
 
 
 class GoldMarketAnalyzer:
     def __init__(self):
         self.api_key = '1LIUUC0LBOCFOJ9P'
         self.news_api_key = '74821d4399404e1c98b5daa4d4e8c0b4'
-        self.openai_api_key = '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'
+        self.openai_api_key = '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'
         openai.api_key = self.openai_api_key
 
     def get_gold_price(self):
@@ -80,11 +81,21 @@ class GoldMarketAnalyzer:
 
     def analyze_news_sentiment(self, articles):
         sid = SentimentIntensityAnalyzer()
-        sentiments = [sid.polarity_scores(article['title'])['compound'] for article in articles]
-        avg_sentiment = sum(sentiments) / len(sentiments)
-        if avg_sentiment >= 0.05:
+        sentiments = [sid.polarity_scores(article['title']) for article in articles]
+
+        # Вычисляем среднюю силу положительного и отрицательного настроения
+        avg_positive_sentiment = sum(sent['pos'] for sent in sentiments) / len(sentiments)
+        avg_negative_sentiment = sum(sent['neg'] for sent in sentiments) / len(sentiments)
+
+        # Определяем общую силу настроения
+        total_sentiment_strength = avg_positive_sentiment - avg_negative_sentiment
+
+        # Пороговые значения для классификации настроения
+        sentiment_threshold = 0.1
+
+        if total_sentiment_strength > sentiment_threshold:
             return "Positive News Sentiment"
-        elif avg_sentiment <= -0.05:
+        elif total_sentiment_strength < -sentiment_threshold:
             return "Negative News Sentiment"
         else:
             return "Neutral News Sentiment"
@@ -92,9 +103,20 @@ class GoldMarketAnalyzer:
     # Download the sentiment analysis lexicon
     #nltk.download('vader_lexicon')
 
-    def gpt3_assist_analysis(self, news_sentiment, expert_opinion, overall_direction, historical_prices):
+    def gpt3_assist_analysis(self, news_sentiment, expert_input, overall_direction, historical_prices,):
         # Construct the prompt and include historical prices in the conversation
-        prompt_text = "Based on the received news data, provide me with a forecast for the next week price movement of the XAUUSD pair, indicating either 'price growth' or 'price down.' The response to 'price growth' or 'price down' occurs by comparing the current quote with the expected value for tomorrow, with a deviation of $10 USD per 1 troy ounce of XAUUSD. In case of no change or if the mentioned deviation is less than $10 USD per 1 troy ounce of XAUUSD, specify 'Unchanged.'"
+        prompt_text = """
+Based on the latest market data, I need your assistance in forecasting the next week's price movement for the XAUUSD pair. Please provide a detailed prediction, indicating whether you expect 'price growth,' 'price down,' or 'unchanged.'
+
+Consider the following factors in your response:
+1. Compare the current quote with the expected value for tomorrow, with a deviation of $10 USD per 1 troy ounce of XAUUSD.
+2. If there is no significant change or if the mentioned deviation is less than $10 USD per 1 troy ounce of XAUUSD, specify 'Unchanged.'
+3. Additionally, calculate your predicted price for next week using the arithmetic mean of the expert input and the next week's predicted price trend.
+
+Example response: "I predict that the XAUUSD pair will experience price growth next week. Considering the current quote and expected value, along with a deviation of $10 USD per 1 troy ounce, I anticipate an increase. Moreover, after calculating the arithmetic mean of my expert input and the predicted price trend, I estimate the next week's price to be $X per 1 troy ounce."
+
+Please incorporate web data into your analysis for a more accurate prediction.
+"""
 
         # Include historical prices in the conversation
         conversation = [
@@ -102,7 +124,7 @@ class GoldMarketAnalyzer:
             {"role": "user", "content": prompt_text},
             {"role": "user", "content": f"Historical Prices: {', '.join(map(str, historical_prices))}"},
             {"role": "user", "content": f"News Sentiment: {news_sentiment}"},
-            {"role": "user", "content": f"Expert Opinion: {expert_opinion}"},
+            {"role": "user", "content": f"Expert Opinion: {expert_input}"},
             {"role": "user", "content": f"Overall Direction: {overall_direction}"}
         ]
 
@@ -114,14 +136,16 @@ class GoldMarketAnalyzer:
             insight = response['choices'][0]['message']['content']
             return insight
         except Exception as e:
-            print(f"Error in GPT-3 API request: {e}")
-            return "GPT-3 insight unavailable."
+            print(f"Error in GPT-4 API request: {e}")
+            return "GPT-4 insight unavailable."
 
     def get_historical_prices(self):
         # Replace this with your actual logic to fetch historical prices
         current_gold_price = self.get_gold_price()
         historical_prices = np.random.uniform(low=current_gold_price - 5, high=current_gold_price + 5, size=100)
         return historical_prices
+
+
 
     def run_analysis(self):
         # Retrieve the latest expert opinion

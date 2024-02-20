@@ -129,4 +129,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = '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'

@@ -12,6 +12,11 @@ from django.conf import settings
 
 
 # Ваше представление Django (например, analysis_page.html)
+
+def start_page(request):
+    return render(request, 'start_page.html')
+
+
 def analysis_page(request):
     analyzer = GoldMarketAnalyzer()
     analysis_results = analyzer.run_analysis()

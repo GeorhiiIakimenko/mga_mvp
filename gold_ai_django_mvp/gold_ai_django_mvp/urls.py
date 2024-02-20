@@ -18,16 +18,17 @@ Including another URLconf
 # gold_ai_django_mvp/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from analysis_app.views import expert_opinion_form, index, analysis_page, chat_with_assistant
+from analysis_app.views import expert_opinion_form, index, analysis_page, chat_with_assistant, start_page
 
 urlpatterns = [
+    path('', start_page, name='start_page'),
     path('admin/', admin.site.urls),
     path('analysis/', include('analysis_app.urls')),
     path('expert_opinion/', expert_opinion_form, name='expert_opinion_form'),
     path('analysis_page/', analysis_page, name='analysis_page'),
     path('chat-with-assistant/', chat_with_assistant, name='chat_with_assistant'),
-    path('', index, name='index'),  # Add this line for the root path
-    # Add other URL patterns as needed
+    path('index/', index, name='index'),
+    # Добавьте другие URL-адреса по мере необходимости
 ]
 
 

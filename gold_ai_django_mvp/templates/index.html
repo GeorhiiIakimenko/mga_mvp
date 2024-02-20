@@ -4,20 +4,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gold Market Analysis</title>
+    <title>AI GOLD TRADER EXPERT</title>
     <!-- Add any additional head elements or stylesheets here -->
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 20px;
-            background-color: #f5f5f5;
+            background-image: url('{% static "images/background.png" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         header {
             text-align: center;
             margin-bottom: 20px;
-            background-color: #ffd700;
+            background-color: rgba(255, 255, 255, 0);
             padding: 10px;
             border-radius: 10px;
         }
@@ -44,7 +53,7 @@
         footer {
             text-align: center;
             margin-top: 20px;
-            background-color: #ffd700;
+            background-color:rgba(255, 255, 255, 0);
             padding: 10px;
             border-radius: 10px;
         }
@@ -52,66 +61,72 @@
 </head>
 <body>
     <header>
-        <h1 style="color: #333;">Gold Market Analysis</h1>
-        <nav>
-             <a href="/static" style="color: #333;">Home</a>
-             <a href="/analysis/" style="color: #333;">Analysis</a>
-             <a href="/expert_opinion/" style="color: #333;">Expert Opinion</a>
-             <a href="/analysis_page/" style="color: #333;">Analysis Page</a>
-        </nav>
+        <div class="container">
+            <h1 style="background-color: rgba(255, 255, 255, 0);">AI GOLD TRADER EXPERT</h1>
+            <nav>
+                <a href="/static" style="color: #333;">Home</a>
+                <a href="/analysis/" style="color: #333;">Analysis</a>
+                <a href="/expert_opinion/" style="color: #333;">Expert Opinion</a>
+                <a href="/analysis_page/" style="color: #333;">Analysis Page</a>
+            </nav>
+        </div>
     </header>
 
-    <section>
+   <div class="container" style="margin: 0 auto;">
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Gold Price Analysis</h2>
-        <p><span>Current Price:</span> ${{ current_gold_price }}</p>
         <p><span>Next Day Price Movement Prediction:</span> {{ next_day_prediction }}</p>
-        <p><span>Short-term SMA:</span> ${{ short_term_sma|floatformat:2 }}</p>
-        <p><span>Long-term SMA:</span> ${{ long_term_sma|floatformat:2 }}</p>
     </section>
 
-    <section>
-        <h2>MACD Analysis</h2>
-        <p><span>MACD:</span> ${{ macd|floatformat:2 }}</p>
-    </section>
-
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Next Week Analysis (Trend-Based)</h2>
-        <p><span>Next Week Predicted Price (Trend):</span> ${{ next_week_prediction_price|floatformat:2 }}</p>
-        <p><span>Next Week Price Movement Prediction (Trend):</span> {{ next_week_prediction_trend }}</p>
+
+        <p><span>Next Week Price Movement Prediction :</span> {{ next_week_prediction_trend }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Sentiment Analysis</h2>
         <p><span>News Sentiment:</span> {{ news_sentiment }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>GPT Analysis</h2>
         <p>{{ gpt_response }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Price Movement Prediction</h2>
         <p>{{ prediction }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Expert's Opinion</h2>
         <p>{{ expert_opinion }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Weighted Conclusion</h2>
          <p><span>Weighted Conclusion:</span> {{ weighted_conclusion|floatformat:2 }}</p>
     </section>
 
-    <section>
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
         <h2>Overall Direction</h2>
         <p class="{% if overall_direction == '↑ Upward' %}green{% elif overall_direction == '↓ Downward' %}red{% endif %}">{{ overall_direction }}</p>
     </section>
+</div>
+
+    <section style="text-align: center; background-color: rgba(255, 255, 255, 0); padding: 15px; border-radius: 10px;">
+        <h2>Gold Price Analysis</h2>
+        <p><span>Current Price:</span> ${{ current_gold_price }}</p>
+        <p><span>Next Week Predicted Price (Trend):</span> ${{ next_week_prediction_price|floatformat:2 }}</p>
+        <p><span>Next Day Price Movement Prediction:</span> {{ next_day_prediction }}</p>
+        <p><span>Short-term SMA:</span> ${{ short_term_sma|floatformat:2 }}</p>
+        <p><span>Long-term SMA:</span> ${{ long_term_sma|floatformat:2 }}</p>
+        <p><span>MACD:</span> ${{ macd|floatformat:2 }}</p>
+    </section>
 
     <footer>
-        <p>&copy; 2023 Gold Market Analysis</p>
+        <p>&copy; 2023 AI GOLD TRADER EXPERT</p>
         <!-- Add any additional footer elements or information here -->
     </footer>
 
